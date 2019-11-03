@@ -25,7 +25,7 @@ interface IProps {
 
 //https://openstreetmap.be/en/projects/howto/openlayers.html
 const MyMap = (props: IProps) => {
-    const { title = 'title', content = 'content', zoomLevel = 16, lat, lng } = props;
+    const { title = 'title', content = null, zoomLevel = 16, lat, lng } = props;
     const location = fromLonLat([lng, lat]);
 
     const mapRef = useRef(null);
