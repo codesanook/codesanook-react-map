@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Map from "ol/Map";
 import View from "ol/View";
 import OSM from "ol/source/OSM";
@@ -13,25 +13,37 @@ import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import TileLayer from "ol/layer/Tile";
 import OverlayPositioning from "ol/OverlayPositioning";
-import './map.css';
+import './my-map.css';
 
 interface IProps {
-    title?: string;
-    content?: string;
     lat: number;
     lng: number;
+    title?: string;
+    content?: string;
+    zoomLevel?: number;
 }
 
 //https://openstreetmap.be/en/projects/howto/openlayers.html
 const MyMap = (props: IProps) => {
-    const { title = 'title', content = 'content', lat, lng } = props;
+    const { title = 'title', content = 'content', zoomLevel = 16, lat, lng } = props;
     const location = fromLonLat([lng, lat]);
+
+    const mapRef = useRef(null);
+    const popupRef = useRef(null);
+    const closeButtonRef = useRef(null);
 
     useEffect(() => {
         const vectorLayer = createVectorLayerWithMarker(location);
         const rasterLayer = new TileLayer({ source: new OSM() });
-        const popup = createPopup(location);
-        const map = createMap(rasterLayer, vectorLayer, popup, location);
+        const popup = createPopup(location, popupRef.current!);
+        const map = createMap(
+            rasterLayer,
+            vectorLayer,
+            popup,
+            location,
+            zoomLevel,
+            mapRef.current!
+        );
 
         // Show popup when click on marker.
         map.on('singleclick', event => {
@@ -50,8 +62,8 @@ const MyMap = (props: IProps) => {
             element.style.cursor = hasFeature ? 'pointer' : 'auto';
         });
 
-        const closer = document.getElementById('popup-closer')!;
-        closer.onclick = (e) => {
+        const closeElement = closeButtonRef.current! as HTMLElement;
+        closeElement.onclick = (e) => {
             e.preventDefault();
             popup.setPosition(undefined);
         };
@@ -60,9 +72,9 @@ const MyMap = (props: IProps) => {
 
     return (
         <div>
-            <div id="map"></div>
-            <div id="popup" className="ol-popup">
-                <span id='popup-closer' className="ol-popup-closer"> </span>
+            <div ref={mapRef} className='my-map'></div>
+            <div ref={popupRef} className="ol-popup">
+                <span ref={closeButtonRef} className="ol-popup-closer"></span>
                 <h4>{title}</h4>
                 <p>{content} </p>
             </div>
@@ -74,7 +86,9 @@ function createMap(
     rasterLayer: TileLayer,
     vectorLayer: VectorLayer,
     popup: Overlay,
-    location: number[]
+    location: number[],
+    zoomLevel: number,
+    mapElement: HTMLElement
 ): Map {
     return new Map({
         layers: [
@@ -84,18 +98,17 @@ function createMap(
         overlays: [
             popup
         ],
-        target: document.getElementById('map')!,
+        target: mapElement,
         view: new View({
             center: location,
-            zoom: 16
+            zoom: zoomLevel
         })
     });
 }
 
-function createPopup(location: number[]): Overlay {
-    const container = document.getElementById('popup')!;
+function createPopup(location: number[], popupElement: HTMLElement): Overlay {
     return new Overlay({
-        element: container,
+        element: popupElement,
         positioning: OverlayPositioning.BOTTOM_CENTER,
         offset: [0, -50],
         position: location
