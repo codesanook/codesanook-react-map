@@ -2,55 +2,5 @@
      height: 400px;
      width: 400px;
      float: left;
-     margin:10px;
- }
-
- .ol-popup {
-     font-size: 12px;
-     position: absolute;
-     background-color: #FFF;
-     filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
-     padding: 15px;
-     border-radius: 10px;
-     border: 1px solid #FFF;
-     bottom: 0px;
-     left: -50px;
-     min-width: 100px;
- }
-
- .ol-popup:after, .ol-popup:before {
-     top: 100%;
-     border: solid transparent;
-     content: " ";
-     height: 0;
-     width: 0;
-     position: absolute;
-     pointer-events: none;
- }
-
- .ol-popup:after {
-     border-top-color: #FFF;
-     border-width: 10px;
-     left: 48px;
-     margin-left: -10px;
- }
-
- .ol-popup:before {
-     border-top-color: #FFF;
-     border-width: 11px;
-     left: 48px;
-     margin-left: -11px;
- }
-
- .ol-popup-closer {
-     text-decoration: none;
-     position: absolute;
-     top: 2px;
-     right: 8px;
-     cursor: pointer;
- }
-
- .ol-popup-closer:after {
-     content: "✖";
-     color: #F00;
+     margin: 10px;
  }
