@@ -20,6 +20,12 @@ const MyMap = (props: IProps) => {
 
     useEffect(() => {
         const rasterLayer = new TileLayer({ source: new OSM() });
+        createMap(
+            rasterLayer,
+            location,
+            zoomLevel,
+            mapRef.current!
+        )
     });
 
     return (
