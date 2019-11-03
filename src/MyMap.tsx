@@ -37,7 +37,14 @@ const MyMap = (props: IProps) => {
         const vectorLayer = createVectorLayerWithMarker(location);
         const popup = createPopup(location, popupRef.current!, closeButtonRef.current!);
 
-
+        createMap(
+            rasterLayer,
+            vectorLayer,
+            popup,
+            location,
+            zoomLevel,
+            mapRef.current!
+        );
     });
 
     return (
