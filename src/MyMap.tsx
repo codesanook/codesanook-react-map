@@ -33,42 +33,12 @@ const MyMap = (props: IProps) => {
     const closeButtonRef = useRef(null);
 
     useEffect(() => {
-        const vectorLayer = createVectorLayerWithMarker(location);
         const rasterLayer = new TileLayer({ source: new OSM() });
-        const popup = createPopup(location, popupRef.current!);
-        const map = createMap(
-            rasterLayer,
-            vectorLayer,
-            popup,
-            location,
-            zoomLevel,
-            mapRef.current!
-        );
+        const vectorLayer = createVectorLayerWithMarker(location);
+        const popup = createPopup(location, popupRef.current!, closeButtonRef.current!);
 
-        // Show popup when click on marker.
-        map.on('singleclick', event => {
-            if (map.hasFeatureAtPixel(event.pixel)) {
-                popup.setPosition(location);
-            } else {
-                popup.setPosition(undefined);
-            }
-        });
 
-        // Change mouse cursor when over marker.
-        map.on('pointermove', function (e) {
-            const pixel = map.getEventPixel(e.originalEvent);
-            const hasFeature = map.hasFeatureAtPixel(pixel);
-            const element = map.getTarget() as HTMLElement;
-            element.style.cursor = hasFeature ? 'pointer' : 'auto';
-        });
-
-        const closeElement = closeButtonRef.current! as HTMLElement;
-        closeElement.onclick = (e) => {
-            e.preventDefault();
-            popup.setPosition(undefined);
-        };
-
-    }, [location]);
+    });
 
     return (
         <div>
@@ -82,6 +52,31 @@ const MyMap = (props: IProps) => {
     );
 }
 
+function registerMapEvent(map: Map, popup: Overlay, location: number[]) {
+    map.on('singleclick', event => {
+        if (map.hasFeatureAtPixel(event.pixel)) {
+            popup.setPosition(location);
+        }
+        else {
+            popup.setPosition(undefined);
+        }
+    });
+    // Change mouse cursor when over marker.
+    map.on('pointermove', function (e) {
+        const pixel = map.getEventPixel(e.originalEvent);
+        const hasFeature = map.hasFeatureAtPixel(pixel);
+        const element = map.getTarget() as HTMLElement;
+        element.style.cursor = hasFeature ? 'pointer' : 'auto';
+    });
+}
+
+function registerCloseButtonEvent(closeButtonElement: HTMLElement, popup: Overlay) {
+    closeButtonElement.onclick = (e) => {
+        e.preventDefault();
+        popup.setPosition(undefined);
+    };
+}
+
 function createMap(
     rasterLayer: TileLayer,
     vectorLayer: VectorLayer,
@@ -90,7 +85,7 @@ function createMap(
     zoomLevel: number,
     mapElement: HTMLElement
 ): Map {
-    return new Map({
+    const map = new Map({
         layers: [
             rasterLayer,
             vectorLayer
@@ -104,15 +99,26 @@ function createMap(
             zoom: zoomLevel
         })
     });
+
+    // Show popup when click on marker.
+    registerMapEvent(map, popup, location);
+    return map;
 }
 
-function createPopup(location: number[], popupElement: HTMLElement): Overlay {
-    return new Overlay({
+function createPopup(
+    location: number[],
+    popupElement: HTMLElement,
+    closeButtonElement: HTMLElement
+): Overlay {
+    const popup = new Overlay({
         element: popupElement,
         positioning: OverlayPositioning.BOTTOM_CENTER,
         offset: [0, -50],
         position: location
     });
+
+    registerCloseButtonEvent(closeButtonElement, popup);
+    return popup;
 }
 
 function createVectorLayerWithMarker(location: number[]): VectorLayer {
