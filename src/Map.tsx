@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import ol from 'ol';
 import Map from "ol/Map";
 import View from "ol/View";
 import LayerTile from "ol/layer/Tile";
@@ -10,6 +11,7 @@ import { fromLonLat } from "ol/proj";
 import Point from "ol/geom/Point";
 import Overlay from "ol/Overlay";
 import './map.css';
+import * as control from 'ol/control'
 
 //https://openstreetmap.be/en/projects/howto/openlayers.html
 const MyMap = () => {
