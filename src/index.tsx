@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Map from './Map'
+import MyMap from './MyMap'
 
 ReactDOM.render(
-    <Map
+    <MyMap
         lat={13.722183}
         lng={100.517462}
         title={'รพ. เลิดสิน'}
