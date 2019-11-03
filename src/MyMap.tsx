@@ -59,7 +59,7 @@ const MyMap = (props: IProps) => {
     );
 }
 
-function registerMapEvent(map: Map, popup: Overlay, location: number[]) {
+function registerMapEvent(map: Map, popup: Overlay, location: number[]): void {
     map.on('singleclick', event => {
         if (map.hasFeatureAtPixel(event.pixel)) {
             popup.setPosition(location);
@@ -77,7 +77,7 @@ function registerMapEvent(map: Map, popup: Overlay, location: number[]) {
     });
 }
 
-function registerCloseButtonEvent(closeButtonElement: HTMLElement, popup: Overlay) {
+function registerCloseButtonEvent(closeButtonElement: HTMLElement, popup: Overlay): void {
     closeButtonElement.onclick = (e) => {
         e.preventDefault();
         popup.setPosition(undefined);
