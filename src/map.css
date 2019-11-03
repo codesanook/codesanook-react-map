@@ -1,5 +1,5 @@
  #map {
-     height: 400px;
+     height: 500px;
      width: 500px;
  }
 
@@ -45,6 +45,7 @@
      position: absolute;
      top: 2px;
      right: 8px;
+     cursor: pointer;
  }
 
  .ol-popup-closer:after {
